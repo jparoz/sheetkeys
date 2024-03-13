@@ -486,6 +486,12 @@ const Commands = {
       "moveCursorToCellLineEnd": "<C-e>",
       "reloadPage": "<M-r>",
     },
+
+    "visual": {
+      "copy": "y",
+      "clear": "d",
+      // TODO: c (change) and ~ (switch case)
+    },
   },
 };
 

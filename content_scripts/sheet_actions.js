@@ -1,3 +1,7 @@
+// XXX TODO: This should be replaced with a setting, available to be configured by the user.
+const YANK = true;
+
+
 const SheetActions = {
   // NOTE(philc): When developing, you can use this snippet to preview all available menu items:
   // Array.from(document.querySelectorAll(".goog-menuitem")).forEach((i) => console.log(i.innerText))
@@ -208,8 +212,18 @@ const SheetActions = {
   deleteRowsOrColumns() {
     this.activateMenu("Delete►");
     if (this.mode == "visualColumn") {
+      if (YANK) { // XXX TODO: This should be checked differently
+        this.selectColumn();
+        this.clickMenu(this.menuItems.copy);
+      }
       this.clickMenu(this.menuItems.deleteColumn);
     } else {
+      if (YANK) { // XXX TODO: This should be checked differently
+        this.preserveSelectedColumn();
+        this.selectRow();
+        this.clickMenu(this.menuItems.copy);
+        this.restoreSelectedColumn();
+      }
       this.clickMenu(this.menuItems.deleteRow);
     }
 
@@ -361,8 +375,14 @@ const SheetActions = {
   },
 
   clear() {
+    if (YANK) { // XXX: This should be checked differently
+      this.clickMenu(this.menuItems.copy);
+    }
+
     this.activateMenu("Delete►");
     this.clickMenu(this.menuItems.deleteValues);
+
+    this.unselectRow();
   },
 
   // Creates a row below and begins editing it.

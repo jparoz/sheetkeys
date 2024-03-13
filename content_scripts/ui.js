@@ -73,6 +73,15 @@ class UI {
       }
     }
 
+    // Since we don't expose in the UI the concept of mappings for visual mode commands,
+    // use the normal mode commands as a fallback for visual mode key mappings.
+    for (const [normalCommandName, key] of Object.entries(mappings["normal"])) {
+      const visualCommandName = this.modeToKeyToCommand["visual"][key];
+      if (!visualCommandName) {
+        this.modeToKeyToCommand["visual"][key] = normalCommandName;
+      }
+    }
+
     this.keyMappingsPrefixes = this.buildKeyMappingsPrefixes(mappings);
   }
 
@@ -200,9 +209,9 @@ class UI {
     }
 
     this.keyQueue.push(keyString);
-    // There are keymaps for two different modes: insert and normal. When we're in one of the visual
-    // modes, use the normal keymap. The commands themselves may implement mode-specific behavior.
-    const modeToUse = SheetActions.mode == "insert" ? "insert" : "normal";
+    // Use the keymap according to the current mode.
+    // TODO: Check whether this change will have any unintended consequences.
+    const modeToUse = SheetActions.mode;
     if (this.keyQueue.length > MAX_KEY_MAPPING_LENGTH) {
       this.keyQueue.shift();
     }
